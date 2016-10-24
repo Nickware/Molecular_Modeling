@@ -4,6 +4,8 @@
 #Date: 21/10/2016
 #Distribuciones Debian y derivadas.
 #Arquitectura x86
+#echo "Verificar version de la distribucion"
+#sudo add-apt-repository 'deb http://cz.archive.ubuntu.com/ubuntu xenial main universe'
 sudo add-apt-repository 'deb http://cz.archive.ubuntu.com/ubuntu trusty main universe' 
 sudo apt-get update
 sudo apt-get -y install build-essential fftw3-dev gfortran
