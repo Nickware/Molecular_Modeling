@@ -17,7 +17,7 @@ sudo apt-get -y install openbabel
 #wget https://launchpad.net/ubuntu/+archive/primary/+files/nwchem_6.5+r26243-6_amd64.deb
 #sudo dpkg -i nwchem_6.5+r26243-6_amd64.deb
 wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.3/files/beta3/vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
-tar -xvf vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
+tar -xvf http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.2/files/final/vmd-1.9.2.src.tar.gz
 mv vmd-1.9.3beta3/ vmd/
 sudo mv -f vmd/ /usr/local/bin
 cd /usr/local/bin/vmd
