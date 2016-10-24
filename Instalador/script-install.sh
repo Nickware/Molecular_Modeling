@@ -11,7 +11,7 @@ sudo apt-get -y install openmpi
 sudo apt-get -y install openbabel
 sudo apt-get -y install pymol
 wget https://launchpad.net/ubuntu/+archive/primary/+files/nwchem_6.5+r26243-6_amd64.deb
-sudo dpkg -i nwchem_6.6+r27746-2_amd64.deb
+sudo dpkg -i nwchem_6.5+r26243-6_amd64.deb
 wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.3/files/beta3/vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
 tar -xvf vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
 mv vmd-1.9.3beta3/ vmd/
