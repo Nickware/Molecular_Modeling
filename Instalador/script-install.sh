@@ -19,7 +19,7 @@ sudo apt-get -y install openbabel
 wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.3/files/beta3/vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
 tar -xvf vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
 mv vmd-1.9.3beta3/ vmd/
-sudo mv vmd/ /usr/local/bin
+sudo mv -f vmd/ /usr/local/bin
 cd /usr/local/bin/vmd
 sudo ./configure
 #wget http://qe-forge.org/gf/download/frsrelease/211/968/espresso-5.4.0.tar.gz
