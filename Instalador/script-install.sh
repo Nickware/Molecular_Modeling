@@ -20,7 +20,7 @@ wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.2/files/final/vmd-1.9.2.src.tar
 tar -xvf vmd-1.9.2.src.tar.gz
 mv plugins vmd-1.9.2/
 mv vmd-1.9.2/ vmd/
-sudo mv /opt/vmd
+sudo mv vmd /opt/
 cd /opt/vmd/
 #sudo ./configure LINUXAMD64
 #cd src
