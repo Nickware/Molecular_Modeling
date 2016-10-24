@@ -18,10 +18,13 @@ sudo apt-get -y install openbabel
 #sudo dpkg -i nwchem_6.5+r26243-6_amd64.deb
 wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.2/files/final/vmd-1.9.2.src.tar.gz
 tar -xvf vmd-1.9.2.src.tar.gz
+mv plugins vmd-1.9.2/
 mv vmd-1.9.2/ vmd/
-sudo mv -f vmd/ /usr/local/bin
-cd /usr/local/bin/vmd
-sudo ./configure
+sudo mv /opt/vmd
+cd /opt/vmd/
+#sudo ./configure LINUXAMD64
+#cd src
+#sudo make install
 #wget http://qe-forge.org/gf/download/frsrelease/211/968/espresso-5.4.0.tar.gz
 #tar -xvf espresso-5.4.0.tar.gz
 #cd espresso-5.4.0
