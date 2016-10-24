@@ -8,9 +8,10 @@ sudo add-apt-repository 'deb http://cz.archive.ubuntu.com/ubuntu trusty main uni
 sudo apt-get update
 sudo apt-get -y install build-essential fftw3-dev gfortran
 sudo apt-get -y install liblapack-dev fftw-dev
-sudo apt-get -y install subversion openmpi-bin libopenmpi-dev libopenmpi1.6 python-dev
-sudo apt-get -y install openbabel
+sudo apt-get -y install subversion libopenmpi-dev libopenmpi1.6 python-dev
+sudo apt-get -y install nwchem
 sudo apt-get -y install pymol
+sudo apt-get -y install openbabel
 #wget https://launchpad.net/ubuntu/+archive/primary/+files/nwchem_6.5+r26243-6_amd64.deb
 #sudo dpkg -i nwchem_6.5+r26243-6_amd64.deb
 wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.3/files/beta3/vmd-1.9.3beta3.bin.LINUXAMD64-OptiX.opengl.tar.gz
