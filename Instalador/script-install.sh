@@ -14,6 +14,7 @@ sudo apt-get -y install subversion libopenmpi-dev libopenmpi1.6 python-dev
 sudo apt-get -y install nwchem
 sudo apt-get -y install pymol
 sudo apt-get -y install openbabel
+wget http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/files/final/vmd-1.9.1.bin.LINUXAMD64.opengl.tar.gz
 tar -zxvf vmd-1.9.1.bin.LINUXAMD64.opengl.tar.gz
 cd vmd-1.9.1
 ./configure LINUXAMD64
