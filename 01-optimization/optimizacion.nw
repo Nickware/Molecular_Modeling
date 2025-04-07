@@ -1,0 +1,26 @@
+echo
+
+start molecule
+
+title "Título"
+memory 8000 mb
+charge 0
+
+geometry units angstroms print xyz autosym
+   Ca    -0.663281   -1.065035    2.081224
+   O      2.465030    0.302780   -1.162330
+   Si     3.889940    0.664630   -0.339900
+   O      3.525590    1.892040    0.410350
+   O      3.433040   -0.422070    0.983990
+end
+
+basis
+  * library 6-31G*
+end
+
+dft
+  xc b3lyp
+  mult 1
+end
+
+task dft optimize

@@ -9,7 +9,7 @@ sudo apt-get update
 echo "Componentes basicos"
 sudo apt-get -y install build-essential fftw3-dev gfortran
 sudo apt-get -y install liblapack-dev fftw-dev
-sudo apt-get -y install subversion libopenmpi-dev libopenmpi1.6 python-dev
+#sudo apt-get -y install subversion libopenmpi-dev libopenmpi1.6 python-dev
 echo "Calculadores"
 sudo apt-get -y install nwchem
 sudo apt-get -y install quantum-espresso
