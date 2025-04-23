@@ -1,85 +1,108 @@
 #!/bin/bash
-#============================================================
-# Script de instalación automática de herramientas científicas VMD y Quantum Espresso
-# Versión: 1.0
-# Fecha: 05/04/2025
-# Compatible con: Distribuciones basadas en Debian (x86_64)
-# Herramientas: VMD 1.9.1 y Quantum ESPRESSO 5.4.0
-#============================================================
+# Script de instalación de VMD y Quantum ESPRESSO
+# Versión 1.3 – Fecha: 20/04/2025
+# Para distribuciones Debian y derivadas – Arquitectura x86_64
 
-# ------------------------------
-# Parámetros configurables
-# ------------------------------
+set -e  # Detiene ejecución si ocurre algún error
+
+# === CONFIGURACIÓN ===
 VMD_VERSION="1.9.1"
-QE_VERSION="5.4.0"
 INSTALL_DIR="/opt"
-USER_HOME="/home/$SUDO_USER"
+LOG_ESTADO="estado_instalacion.log"
 
-# ------------------------------
-# Verificación del usurio root
-# ------------------------------
-if [[ $EUID -ne 0 ]]; then
-  echo "Este script debe ejecutarse como root. Usa: sudo $0"
-  exit 1
-fi
+# Limpiar log previo si existe
+> "$LOG_ESTADO"
 
-# ------------------------------
-# ACTUALIZACIÓN DE REPOSITORIOS
-# ------------------------------
-echo " Actualizando repositorios de paquetes..."
-apt-get update -y
+# === FUNCIONES ===
 
-# ------------------------------
-# Instalación de dependecias básicas
-# ------------------------------
-echo " Instalando dependencias requeridas para compilar..."
-apt-get install -y build-essential gfortran wget tar \
-  libfftw3-dev libblas-dev liblapack-dev libxc-dev \
-  libopenmpi-dev openmpi-bin xauth libglu1-mesa
+# Verificar si VMD se instaló correctamente
+check_vmd() {
+    echo -e "\n Verificando instalación de VMD..."
+    if command -v vmd >/dev/null 2>&1; then
+        echo " VMD está disponible en el sistema." | tee -a "$LOG_ESTADO"
+    else
+        echo " VMD no se encuentra en el PATH. Verifica la instalación o el .bashrc." | tee -a "$LOG_ESTADO"
+    fi
+}
 
-# ------------------------------
-# Instalación VMD (decargar, construir e instalar)
-# ------------------------------
-echo " Descargando VMD $VMD_VERSION..."
-cd /tmp
-wget -c http://www.ks.uiuc.edu/Research/vmd/vmd-$VMD_VERSION/files/final/vmd-$VMD_VERSION.bin.LINUXAMD64.opengl.tar.gz
+# Verificar si Quantum ESPRESSO se instaló correctamente
+check_qe() {
+    echo -e "\n Verificando instalación de Quantum ESPRESSO..."
+    if [ -x "$INSTALL_DIR/espresso/bin/pw.x" ]; then
+        echo " Quantum ESPRESSO fue instalado exitosamente y 'pw.x' está presente." | tee -a "$LOG_ESTADO"
+    else
+        echo " No se encontró 'pw.x' en $INSTALL_DIR/espresso/bin. Revisa la compilación." | tee -a "$LOG_ESTADO"
+    fi
+}
 
-echo " Extrayendo VMD..."
-tar -xzf vmd-$VMD_VERSION.bin.LINUXAMD64.opengl.tar.gz
-cd vmd-$VMD_VERSION
+# === INICIO DEL SCRIPT ===
+
+echo " Iniciando instalación de herramientas científicas..."
+
+# Actualizar paquetes
+echo " Actualizando lista de paquetes..."
+sudo apt-get update
+
+# Instalar dependencias necesarias
+DEPS=(build-essential gfortran wget tar make xorg libglu1-mesa-dev)
+for pkg in "${DEPS[@]}"; do
+    sudo apt-get -y install "$pkg"
+done
+
+# === INSTALACIÓN DE VMD ===
+echo " Instalando VMD $VMD_VERSION..."
+
+VMD_TAR="vmd-${VMD_VERSION}.bin.LINUXAMD64.opengl.tar.gz"
+VMD_URL="http://www.ks.uiuc.edu/Research/vmd/vmd-${VMD_VERSION}/files/final/$VMD_TAR"
+
+wget -c "$VMD_URL"
+tar -zxvf "$VMD_TAR"
+cd "vmd-${VMD_VERSION}"
 ./configure LINUXAMD64
 cd src
-make install
-cd /tmp
+sudo make install
+cd ../..
 
-# ------------------------------
-# Instalación Quantum Espresso (descargar, construir e instalar)
-# ------------------------------
-echo " Descargando Quantum ESPRESSO $QE_VERSION..."
-wget -c http://qe-forge.org/gf/download/frsrelease/211/968/espresso-$QE_VERSION.tar.gz
+echo " VMD instalado."
+check_vmd
 
-echo " Extrayendo Quantum ESPRESSO..."
-tar -xvf espresso-$QE_VERSION.tar.gz
-mv espresso-$QE_VERSION $INSTALL_DIR/espresso
+# === INSTALACIÓN DE QUANTUM ESPRESSO ===
+echo "⚛ Instalación de Quantum ESPRESSO..."
+echo " Pega la URL del archivo .tar.gz de Quantum ESPRESSO (GitLab):"
+read -p "URL (ej: https://gitlab.com/...): " QE_URL
 
-echo " Compilando Quantum ESPRESSO..."
-cd $INSTALL_DIR/espresso
-./configure
-make all
-
-# ------------------------------
-# Configuración del entorno
-# ------------------------------
-echo " Configurando PATH para Quantum ESPRESSO..."
-QE_PATH_LINE="export PATH=\$PATH:$INSTALL_DIR/espresso/bin"
-if ! grep -q "$QE_PATH_LINE" "$USER_HOME/.bashrc"; then
-  echo "$QE_PATH_LINE" >> "$USER_HOME/.bashrc"
-  echo " PATH de Quantum ESPRESSO agregado a ~/.bashrc"
+if [[ -z "$QE_URL" ]]; then
+    echo " No se proporcionó una URL. Abortando..."
+    exit 1
 fi
 
-# ------------------------------
-# Finalización
-# ------------------------------
-echo " Instalación completada exitosamente."
-echo " Reinicia tu terminal o ejecuta: source ~/.bashrc"
+QE_TAR=$(basename "$QE_URL")
+QE_FOLDER="espresso"
 
+wget -c "$QE_URL" -O "$QE_TAR"
+
+if [[ $? -ne 0 ]]; then
+    echo " Error al descargar el archivo. Verifica que la URL sea correcta."
+    exit 1
+fi
+
+tar -xzf "$QE_TAR"
+EXTRACTED_FOLDER=$(tar -tzf "$QE_TAR" | head -1 | cut -f1 -d"/")
+
+cd "$EXTRACTED_FOLDER"
+./configure
+make all
+cd ..
+sudo mv "$EXTRACTED_FOLDER" "$INSTALL_DIR/$QE_FOLDER"
+
+# Agregar al PATH del usuario
+USER_HOME=$(eval echo ~${SUDO_USER})
+echo "export PATH=\$PATH:$INSTALL_DIR/$QE_FOLDER/bin" >> "$USER_HOME/.bashrc"
+source "$USER_HOME/.bashrc"
+
+check_qe
+
+echo -e "\n Estado de la instalación:"
+cat "$LOG_ESTADO"
+
+echo -e "\n Todo listo. Reinicia la terminal o ejecuta 'source ~/.bashrc' para usar los comandos instalados."
