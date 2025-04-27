@@ -2,6 +2,12 @@
 # Script de instalación de VMD y Quantum ESPRESSO
 # Versión 1.3 – Fecha: 20/04/2025
 # Para distribuciones Debian y derivadas – Arquitectura x86_64
+# Autor: N.Torres
+# Descripción: Este script instala VMD y Quantum ESPRESSO en sistemas Debian y derivados.
+# Requiere privilegios de superusuario para instalar paquetes y modificar el PATH.
+# Uso: Ejecutar el script como superusuario o con sudo.
+# Asegúrate de tener privilegios de superusuario para ejecutar este script.
+# Este script ha sido probado en Trisquel 17.04 y Ubuntu 24.04.
 
 set -e  # Detiene ejecución si ocurre algún error
 

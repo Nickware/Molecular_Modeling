@@ -2,6 +2,12 @@
 # Script para la instalación de complementos desde el repositorio
 # Versión 2.1 - 20/04/2025
 # Para distribuciones Debian y derivadas, arquitectura x86_64
+# Autor: N.Torres
+# Descripción: Este script instala VMD y Quantum ESPRESSO en sistemas Debian y derivados.
+# Requiere privilegios de superusuario para instalar paquetes y modificar el PATH.
+# Uso: Ejecutar el script como superusuario o con sudo.
+# Asegúrate de tener privilegios de superusuario para ejecutar este script.
+# Este script ha sido probado en Trisquel 17.04 y Ubuntu 24.04.
 
 # Limpiar logs anteriores
 rm -f paquetes_instalados.log paquetes_fallidos.log
@@ -44,7 +50,7 @@ install_pkg() {
 
 # Componentes básicos
 echo -e "\n Instalando componentes básicos..."
-for pkg in build-essential fftw3-dev gfortran liblapack-dev fftw-dev; do
+for pkg in build-essential libblas-dev  libopenmpi-dev libfftw3-dev gfortran liblapack-dev fftw-dev; do
     install_pkg "$pkg"
 done
 
