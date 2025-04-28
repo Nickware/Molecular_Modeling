@@ -1,6 +1,6 @@
 # =========================================================
 # Script: graficar_optimizacion_geométrica.py
-# Autor: [Tu Nombre]
+# Autor: N.Torres
 # Descripción: 
 #   Este script lee un archivo de salida de NWChem, extrae las energías
 #   de cada iteración de una optimización geométrica, convierte las
