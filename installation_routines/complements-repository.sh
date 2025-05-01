@@ -7,7 +7,7 @@
 # Requiere privilegios de superusuario para instalar paquetes y modificar el PATH.
 # Uso: Ejecutar el script como superusuario o con sudo.
 # Asegúrate de tener privilegios de superusuario para ejecutar este script.
-# Este script ha sido probado en Trisquel 17.04 - Ubuntu 24.04 - Debian 12.
+# Este script ha sido probado en Zorin 17.04 - Ubuntu 24.04 - Debian 12.
 
 # Limpiar logs anteriores
 rm -f paquetes_instalados.log paquetes_fallidos.log
