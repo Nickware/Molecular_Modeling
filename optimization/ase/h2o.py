@@ -1,4 +1,4 @@
-# structure optimization of water molecule with NWChem and ASE
+# Structure optimization of water molecule with NWChem and ASE
 # This script uses ASE to optimize the geometry of a water molecule (H2O)
 # using the NWChem calculator. It sets up the water molecule with
 # specified bond length and angle, performs the optimization,
@@ -13,14 +13,11 @@
 # and the ASE BFGS class for optimization
 
 # The script uses the ASE NWChem calculator to perform the calculation. 
-# The script uses the ASE write function to write the optimized structure to an XYZ file.
 # The script uses the ASE numpy module to perform numerical calculations.
 # The script uses the ASE io module to write the optimized structure to an XYZ file.
 # The script uses the ASE optimize module to perform the optimization.
 # The script uses the ASE calculators module to perform the calculation.
 # The script uses the ASE atoms module to create the water molecule.
-# The script uses the ASE optimize module to perform the optimization.
-# The script uses the ASE calculators module to perform the calculation.
 
 from ase import Atoms
 from ase.optimize import BFGS
