@@ -47,7 +47,8 @@ def graficar_optimizacion(energias_hartree):
 
 # Programa principal
 if __name__ == "__main__":
-    ruta_archivo = 'optimizacion.nwo'  # Cambiar a tu ruta si es necesario
+    # Cambiar a la ruta que se requiera
+    ruta_archivo = 'optimizacion.nwo'  
     contenido = leer_archivo(ruta_archivo)
     energias = extraer_energias(contenido)
 
