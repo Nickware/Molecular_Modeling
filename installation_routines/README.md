@@ -1,26 +1,26 @@
-# Installation Routines for Molecular Mechanics
+# Rutinas de instalación para Mecánica Molecular
 
-This folder contains scripts and resources to facilitate the installation and setup of the **Molecular Mechanics** simulation software across different environments.
+Esta carpeta contiene scripts y recursos para facilitar la instalación y configuración del software de simulación **Mecánica Molecular** en diferentes entornos.
 
-## Contents
+## Contenido
 
-- `dependencies/`: Scripts to install required software libraries.
-- `environment_setup/`: Tools to configure runtime environments.
-- `install.sh`: A general-purpose shell script for automatic installation.
-- `README.md`: Brief documentation for individual scripts.
+- `dependencies/`: Scripts para instalar las bibliotecas de software necesarias.
+- `environment_setup/`: Herramientas para configurar entornos de ejecución.
+- `install.sh`: Un script de shell de propósito general para la instalación automática.
+- `README.md`: Documentación breve de los scripts individuales.
 
-## Prerequisites
+## Requisitos previos
 
-Before running any script, ensure you have:
+Antes de ejecutar cualquier script, asegúrese de tener:
 
-- A Unix-like OS (Linux Distributions)
-- `bash` shell (or compatible)
-- Administrative privileges (`sudo` access)
-- An internet connection for downloading dependencies
+- Un sistema operativo similar a Unix (distribuciones Linux)
+- Un shell `bash` (o compatible)
+- Privilegios administrativos (acceso `sudo`)
+- Una conexión a internet para descargar dependencias
 
-## Usage
+## Uso
 
-You can install the software by running:
+Puede instalar el software ejecutando:
 
 ```bash
 ./complements-build.sh
