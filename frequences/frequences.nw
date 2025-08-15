@@ -1,0 +1,29 @@
+echo
+
+start molecule
+
+title "Título"
+memory 8000 mb
+charge 0
+
+geometry units angstroms print xyz autosym
+   O      0.2672100000   -0.2505700000    0.2411800000
+   H      0.5536293646    0.4280420604   -0.3587779956
+   H      2.0844049454   -0.7237858772    0.2411792129
+end
+
+basis
+  * library 6-31G*
+end
+
+dft
+  xc b3lyp
+  mult 1
+end
+
+task dft optimize      # Optimización geométrica
+task dft energy        # Energía de un solo punto
+task dft freq		# Frecuencias vibracionales 
+
+
+
