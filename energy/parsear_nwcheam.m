@@ -53,7 +53,7 @@ for i = 1:length(lines)
                 if ~isnan(val)
                     energias(end+1) = val;
                     n_energias++;
-                    fprintf("✅ Energía encontrada: %.8f Ha (línea %d)\n", val, i);
+                    fprintf(" Energía encontrada: %.8f Ha (línea %d)\n", val, i);
                 endif
                 break;
             endif
@@ -90,15 +90,15 @@ for i = 1:length(lines)
         if found == 3
             coordenadas(end+1, :) = coords(:)';  % Aplanar
             n_coords++;
-            fprintf("✅ 3 coordenadas almacenadas.\n");
+            fprintf(" 3 coordenadas almacenadas.\n");
         else
-            fprintf("⚠️  Solo %d coordenadas encontradas.\n", found);
+            fprintf("  Solo %d coordenadas encontradas.\n", found);
         endif
     endif
 
     % === 3. Extraer gradientes ===
     if ~isempty(strfind(line, "DFT ENERGY GRADIENTS"))
-        fprintf("🔍 Gradientes detectados en línea %d\n", i);
+        fprintf(" Gradientes detectados en línea %d\n", i);
         grads = zeros(3,3);
         found = 0;
         for j = i+3:i+10
@@ -126,16 +126,16 @@ for i = 1:length(lines)
             norm_grad = norm(grads(:));
             gradientes(end+1) = norm_grad;
             n_grads++;
-            fprintf("✅ Gradientes almacenados. Norma total: %.3e Ha/Å\n", norm_grad);
+            fprintf(" Gradientes almacenados. Norma total: %.3e Ha/Å\n", norm_grad);
         else
-            fprintf("⚠️  Solo %d gradientes encontrados.\n", found);
+            fprintf("  Solo %d gradientes encontrados.\n", found);
         endif
     endif
 endfor
 
 % Mostrar resumen
 fprintf("\n");
-fprintf("✅ RESUMEN DE EXTRACCIÓN\n");
+fprintf(" RESUMEN DE EXTRACCIÓN\n");
 fprintf("Energías encontradas: %d\n", n_energias);
 fprintf("Conjuntos de coordenadas: %d\n", size(coordenadas, 1));
 fprintf("Conjuntos de gradientes: %d\n", length(gradientes));
@@ -223,4 +223,4 @@ data.distOH2 = distOH2;
 data.angHOH = angHOH;
 save("datos_nwchem_extraidos.mat", "-struct", "data");
 
-fprintf("\n✅ Datos guardados en 'datos_nwchem_extraidos.mat'\n");
+fprintf("\n Datos guardados en 'datos_nwchem_extraidos.mat'\n");
