@@ -1,0 +1,36 @@
+&CONTROL
+   calculation      = 'scf'
+   pseudo_dir       = '/home/jntorresr/workspace/q-e/pseudo'
+/
+&SYSTEM
+   ntyp             = 2
+   nat              = 3
+   ibrav            = 0
+/
+&ELECTRONS
+/
+&IONS
+/
+&CELL
+/
+&FCP
+/
+&RISM
+/
+ATOMIC_SPECIES
+C 12.011 C.pbe-n-kjpaw_psl.1.0.0.UPF
+O 15.999 O.pbe-n-kjpaw_psl.1.0.0.UPF
+
+K_POINTS automatic
+1 1 1  0 0 0
+
+CELL_PARAMETERS angstrom
+0.00000000000000 0.00000000000000 0.00000000000000
+0.00000000000000 0.00000000000000 0.00000000000000
+0.00000000000000 0.00000000000000 0.00000000000000
+
+ATOMIC_POSITIONS angstrom
+C -0.0000000000 0.0000000000 0.0000000000  
+O -1.7208812237 -0.1191950738 -0.0000666908  
+O 1.2080000000 -0.0000000000 -0.0000000000  
+
