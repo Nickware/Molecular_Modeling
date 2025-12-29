@@ -22,7 +22,7 @@ Colombia posee una vasta biodiversidad y recursos naturales que son foco de inve
 
   * **Aprovechamiento de Subproductos Agrícolas:**
       * **Problema Real:** Desarrollar **materiales innovadores** a partir de subproductos como el **cisco de café** (Woodpecker) o la **yuca** (biopolímeros).
-      * **MM/DM se Enfoca en:** Entender cómo se organizan y entrelazan las moléculas del biopolímero con el subproducto, permitiendo diseñar estructuras con propiedades específicas (ej. dureza, aislamiento) que puedan reemplazar la madera o el plástico tradicional.
+      * **MM/DM**: Se enfoca en entender cómo se organizan y entrelazan las moléculas del biopolímero con el subproducto, permitiendo diseñar estructuras con propiedades específicas (ej. dureza, aislamiento) que puedan reemplazar la madera o el plástico tradicional.
 
 -----
 
@@ -32,10 +32,10 @@ Varias instituciones colombianas investigan activamente en nanotecnología y mat
 
   * **Diseño de Nanosensores (Quimiosensores):**
       * **Problema Real:** Crear sensores **altamente sensibles y selectivos** para detectar contaminantes, metales pesados (relevante en la industria minera o agrícola) o gases.
-      * **MM/DM se Enfoca en:** Modelar la interacción precisa entre la molécula a detectar (huésped) y la **nanoestructura** del sensor (hospedador, ej. *Metal Organic Frameworks - MOFs* o macromoléculas). Se busca una configuración que minimice la energía (máxima afinidad de unión) y que prediga el cambio óptico o eléctrico al unirse.
+      * **MM/DM**: Se enfoca en modelar la interacción precisa entre la molécula a detectar (huésped) y la **nanoestructura** del sensor (hospedador, ej. *Metal Organic Frameworks - MOFs* o macromoléculas). Se busca una configuración que minimice la energía (máxima afinidad de unión) y que prediga el cambio óptico o eléctrico al unirse.
   * **Nano fluidos y Transferencia de Calor:**
       * **Problema Real:** Optimizar la eficiencia de los nanofluidos (líquidos con nanopartículas) usados en procesos industriales o sistemas de enfriamiento.
-      * **MM/DM se Enfoca en:** Simular la **dinámica** y la **dispersión** de nanomateriales (como el **grafeno** o **nanotubos de carbono**) dentro de un líquido base, lo que afecta directamente su capacidad de transferir calor.
+      * **MM/DM**: Se enfoca en simular la **dinámica** y la **dispersión** de nanomateriales (como el **grafeno** o **nanotubos de carbono**) dentro de un líquido base, lo que afecta directamente su capacidad de transferir calor.
 
 -----
 
