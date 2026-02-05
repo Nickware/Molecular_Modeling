@@ -20,7 +20,7 @@ Este script realiza una optimización geométrica de la molécula de etano utili
 - La documentación oficial de ASE para el módulo NWChem detalla los parámetros opcionales y métodos disponibles para personalizar aún más este tipo de cálculos.[7][2]
 - La documentación de NWChem y ejemplos de input permiten comprender cómo ASE traduce las definiciones de objetos Python a archivos de entrada para NWChem.[4][8]
 
-Si se requiere explicaciones sobre la personalización de parámetros, la integración con scripts más complejos o la visualización de trayectorias de optimización, revisar la documentación asociada a Readme.md
+Si se requieren explicaciones sobre la personalización de parámetros, la integración con scripts más complejos o la visualización de trayectorias de optimización, revisar la documentación asociada a ASE python.
 
 ### Documentación adicional
 
