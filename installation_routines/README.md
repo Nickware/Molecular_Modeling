@@ -1,6 +1,6 @@
-# Rutinas de instalación para Mecánica Molecular
+# Rutinas de instalación software básico 
 
-Esta carpeta contiene scripts y recursos para facilitar la instalación y configuración del software de simulación **Mecánica Molecular** en diferentes entornos.
+Esta carpeta contiene scripts y recursos para facilitar la instalación y configuración del software de simulación en el área de **Mecánica Molecular** en diferentes entornos.
 
 ## Contenido
 
