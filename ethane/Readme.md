@@ -6,8 +6,8 @@ Este script realiza una optimización geométrica de la molécula de etano utili
 
 - **Lectura y definición de la molécula:** El objeto `Atoms` se construye a partir del archivo 'ethane.xyz', que contiene la geometría inicial de la molécula en formato XYZ.[2]
 - **Asignación del calculador:** Al objeto molecular se le asigna el calculador NWChem, usando como funcional el 'PBE'. Es posible definir más parámetros (basis set, convergencia, etc.), pero aquí se usa una configuración mínima. Los parámetros adicionales pueden especificarse como diccionarios en el objeto NWChem para personalizar aún más el cálculo.[7][2]
-- **Optimización geométrica:** La clase BFGS realiza la minimización de la energía variando la geometría molecular hasta que la fuerza máxima sobre cualquier átomo sea menor a 0.01 eV/Å (criterio de convergencia).[2]
-- **Almacenamiento y análisis:** Cuando la optimización concluye, la geometría final se guarda en 'ethane_opt.xyz', y se obtiene la energía potencial del sistema optimizado mediante `get_potential_energy()`.[2]
+- **Optimización geométrica:** La clase BFGS realiza la minimización de la energía variando la geometría molecular hasta que la fuerza máxima sobre cualquier átomo sea menor que $0.01$ $eV/Å$ (criterio de convergencia).[2]
+- **Almacenamiento y análisis:** Cuando la optimización concluye, la geometría final se guarda en 'ethane_opt.xyz' y se obtiene la energía potencial del sistema optimizado mediante `get_potential_energy()`.[2]
 
 ### Utilidad y comentarios
 
@@ -20,7 +20,7 @@ Este script realiza una optimización geométrica de la molécula de etano utili
 - La documentación oficial de ASE para el módulo NWChem detalla los parámetros opcionales y métodos disponibles para personalizar aún más este tipo de cálculos.[7][2]
 - La documentación de NWChem y ejemplos de input permiten comprender cómo ASE traduce las definiciones de objetos Python a archivos de entrada para NWChem.[4][8]
 
-Si se requieren explicaciones sobre la personalización de parámetros, la integración con scripts más complejos o la visualización de trayectorias de optimización, revisar la documentación asociada a ASE python.
+Si se requieren explicaciones sobre la personalización de parámetros, la integración con scripts más complejos o la visualización de trayectorias de optimización, revisar la documentación asociada a ASE Python.
 
 ### Documentación adicional
 
