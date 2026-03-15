@@ -6,14 +6,14 @@ Este script realiza una optimización de la estructura de la molécula de metano
 
 - **Lectura y definición de la molécula:** El objeto `Atoms` se construye a partir del archivo 'methane.xyz', que contiene la geometría inicial de la molécula en formato XYZ.[2]
 - **Asignación del calculador:** Se asigna a la molécula el calculador NWChem usando el funcional 'PBE', que se encargará de calcular la energía y las fuerzas en cada paso de la optimización.[4][5]
-- **Optimización geométrica:** La clase BFGS realiza la minimización de la energía ajustando la geometría molecular hasta que la fuerza máxima en cualquier átomo sea menor a 0.01 eV/Å (criterio de convergencia), y guarda la trayectoria de la optimización en 'optimization.traj'.[5][4]
-- **Almacenamiento y análisis:** La geometría final optimizada se guarda en 'methane_opt.xyz', y se obtiene la energía potencial del sistema en esa configuración, útil para verificar la estabilidad final de la estructura optimizada.[2]
+- **Optimización geométrica:** La clase BFGS realiza la minimización de la energía ajustando la geometría molecular hasta que la fuerza máxima en cualquier átomo sea menor a $0.01$ $eV/Å$ (criterio de convergencia) y guarda la trayectoria de la optimización en 'optimization.traj'.[5][4]
+- **Almacenamiento y análisis:** La geometría final optimizada se guarda en 'methane_opt.xyz' y se obtiene la energía potencial del sistema en esa configuración, útil para verificar la estabilidad final de la estructura optimizada.[2]
 
 ### Utilidad y comentarios
 
 - Este es un ejemplo simplificado para realizar optimizaciones estructurales usando ASE y NWChem, ideal para estudios de moléculas pequeñas y sistemas de interés en química computacional.[5]
 - Es fundamental que NWChem esté correctamente instalado y configurado en el entorno de uso, ajustando parámetros según las necesidades específicas (basis set, funcional adicional, etc.).[4][5]
-- La integración con ASE permite una gestión sencilla de estructuras y trayectorias, además de facilitar la automatización y análisis posterior de los resultados.[5]
+- La integración con ASE permite una gestión sencilla de estructuras y trayectorias, además de facilitar la automatización y el análisis posterior de los resultados.[5]
 
 ### Recursos adicionales
 
