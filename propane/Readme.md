@@ -1,6 +1,6 @@
-# Optimización geométrica de la molécula de etano utilizando la interfaz de ASE con NWChem
+# Optimización geométrica de la molécula de Propano utilizando la interfaz de ASE con NWChem
 
-Este script realiza una optimización geométrica de la molécula de etano utilizando la interfaz de ASE (Atomic Simulation Environment) con el motor de cálculos cuánticos NWChem, aplicando el funcional de densidad PBE y un algoritmo de optimización BFGS sobre una estructura inicial almacenada en 'propane.xyz'.[2][7]
+Este script realiza una optimización geométrica de la molécula de propano utilizando la interfaz de ASE (Atomic Simulation Environment) con el motor de cálculos cuánticos NWChem, aplicando el funcional de densidad PBE y un algoritmo de optimización BFGS sobre una estructura inicial almacenada en 'propane.xyz'.[2][7]
 
 ### Descripción del flujo
 
