@@ -28,7 +28,7 @@ def parse_nwchem_output(file_path):
     
     return energy, lattice_params
 
-# Ejemplo de uso
+# Instrucción de uso
 energy, lattice = parse_nwchem_output("optimizacion.out")
 print(f"Energia total: {energy} eV")
 print(f"Parámetros de celda: {lattice}")
