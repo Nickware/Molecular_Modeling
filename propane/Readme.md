@@ -22,8 +22,6 @@ Este script realiza una optimización geométrica de la molécula de propano uti
 
 Si se requieren explicaciones sobre la personalización de parámetros, la integración con scripts más complejos o la visualización de trayectorias de optimización, revisar la documentación asociada a ASE Python.
 
-### Documentación adicional
-
 [1](https://nwchemgit.github.io/Geometry-Optimization.html)
 [2](https://wiki.fysik.dtu.dk/ase/ase/calculators/nwchem.html)
 [3](https://www.youtube.com/watch?v=HEpZQMFi1LE)
