@@ -1,7 +1,25 @@
 % parsear_nwchem.m
 % Versión robusta para extraer datos de salida de NWChem
 % Compatible con diferentes formatos y versiones
-
+% Autor: ChatGPT
+% Este script lee un archivo de salida de NWChem, extrae energías DFT, coordenadas atómicas y gradientes,
+% y luego calcula distancias y ángulos para la molécula de agua.
+% El script es flexible y maneja variaciones en el formato de salida, con mensajes de depuración para facilitar la identificación de problemas.
+% Requiere que el archivo "energy.nwo" esté en el mismo directorio.
+% Uso:
+% 1. Coloca el archivo "energy.nwo" en el mismo directorio que
+%    este script.
+% 2. Ejecuta el script en Octave o MATLAB.
+% El script mostrará un resumen de los datos extraídos y guardará los resultados en "datos_nwchem_extraidos.mat".
+% Nota: Asegúrate de tener permisos de lectura para el archivo "energy.nwo" y de que el formato del archivo sea compatible con las expectativas del script.
+% Si el script no encuentra energías, coordenadas o gradientes, mostrará advertencias para ayudarte a identificar posibles problemas con el formato del archivo de salida de NWChem.
+% El script también incluye gráficos para visualizar la convergencia de la energía, la norma del gradiente, las longitudes de enlace y el ángulo de enlace a lo largo de las iteraciones.
+% Si tienes problemas con el formato del archivo, revisa los mensajes de depuración para identificar qué parte del proceso de extracción no está funcionando correctamente.
+% Si el formato del archivo de salida de NWChem es muy diferente, es posible que necesites ajustar los patrones de búsqueda en el script para adaptarlo a tu caso específico.
+% Este script es un punto de partida robusto para analizar la salida de NWChem, pero puede requerir ajustes dependiendo de la versión de NWChem y del formato específico de tu archivo de salida.
+% Si tienes problemas o necesitas ayuda para adaptar el script a tu formato específico, no dudes en pedir asistencia.
+% Nota: Este script asume que el archivo de salida de NWChem contiene líneas con la energía total DFT en el formato "Total DFT energy = -76.xxxx Ha", coordenadas atómicas en un bloque que sigue a la línea "Output coordinates in angstroms", y gradientes en un bloque que sigue a la línea "DFT ENERGY GRADIENTS". Si tu archivo de salida tiene un formato diferente, es posible que necesites ajustar los patrones de búsqueda en el script para adaptarlo a tu caso específico.
+% ¡Buena suerte con tu análisis de NWChem!
 clear; clc;
 
 % Nombre del archivo
