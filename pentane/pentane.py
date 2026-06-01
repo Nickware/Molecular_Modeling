@@ -1,4 +1,4 @@
-# Structure optimization of butane molecule with NWChem calculator
+# Structure optimization of pentane molecule with NWChem calculator
 # (This is a simplified version without detailed input parameters)
 # Note: Ensure NWChem is properly installed and configured in your environment.
 # You may need to adjust the calculator settings based on your NWChem installation.
@@ -10,9 +10,9 @@ from ase.optimize import BFGS
 from ase.calculators.nwchem import NWChem
 from ase.io import write
 
-butane = read('butane.xyz')
-butane.calc = NWChem(xc='PBE')
-opt = BFGS(butane, trajectory="optimization.traj")
+pentane = read('pentane.xyz')
+pentane.calc = NWChem(xc='PBE')
+opt = BFGS(pentane, trajectory="optimization.traj")
 opt.run(fmax=0.01)
-write('butane_opt.xyz', butane)
-butane.get_potential_energy()
+write('pentane_opt.xyz', pentane)
+pentane.get_potential_energy()
