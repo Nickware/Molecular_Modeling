@@ -1,41 +1,116 @@
-# Structure optimization of water molecule with NWChem and ASE
-# This script uses ASE to optimize the geometry of a water molecule (H2O)
-# using the NWChem calculator. It sets up the water molecule with
-# specified bond length and angle, performs the optimization,
-# and writes the optimized structure to an XYZ file.
-# The script also calculates the potential energy of the optimized structure.
-# The script uses the BFGS algorithm for optimization and sets a force
-# convergence criterion of 0.02 eV/Å.
-# The script requires the ASE package and NWChem to be installed and properly configured.
-# The script assumes that NWChem is available in the system path.
-# The script uses the PBE functional for the calculation.
-# The script uses the ASE Atoms class to create the water molecule
-# and the ASE BFGS class for optimization
+# Structure optimization of h2o molecule with NWChem calculator
+# (Simplified version without detailed input parameters)
+# Note: Ensure NWChem is properly installed and configured in your environment.
+# You may need to adjust the calculator settings based on your NWChem installation.
 
-# The script uses the ASE NWChem calculator to perform the calculation. 
-# The script uses the ASE numpy module to perform numerical calculations.
-# The script uses the ASE io module to write the optimized structure to an XYZ file.
-# The script uses the ASE optimize module to perform the optimization.
-# The script uses the ASE calculators module to perform the calculation.
-# The script uses the ASE atoms module to create the water molecule.
+import numpy as np
+import matplotlib.pyplot as plt
 
 from ase import Atoms
+from ase.io import read, write
 from ase.optimize import BFGS
 from ase.calculators.nwchem import NWChem
-from ase.io import write
-import numpy as np
+from ase.vibrations import Vibrations
 
-d = 0.9575
-t = np.pi / 180 * 104.51
+# ---------------------------------------------------------------------------
+# 1. Optimización de geometría
+# ---------------------------------------------------------------------------
+h2o = read('h2o.xyz')
+h2o.calc = NWChem(xc='PBE')
 
-water = Atoms('H2O',
-              positions=[(d, 0, 0),
-                         (d * np.cos(t), d * np.sin(t), 0),
-                         (0, 0, 0)])
-
-water.calc = NWChem(xc='PBE')
-opt = BFGS(water, trajectory="optimization.traj")
+opt = BFGS(h2o, trajectory="optimization.traj")
 opt.run(fmax=0.01)
-write('H20.xyz', water)
-water.get_potential_energy()
-# The script uses the ASE io module to write the optimized structure to an XYZ file.
+
+write('h2o_opt.xyz', h2o)
+
+energy = h2o.get_potential_energy()
+print(f"Energía potencial en el mínimo: {energy:.6f} eV")
+
+# ---------------------------------------------------------------------------
+# 2. Fuerzas atómicas en la geometría optimizada
+# ---------------------------------------------------------------------------
+forces = h2o.get_forces()
+max_force = np.max(np.linalg.norm(forces, axis=1))
+print(f"Fuerza máxima residual sobre un átomo: {max_force:.6f} eV/Å")
+
+# ---------------------------------------------------------------------------
+# 3. Análisis vibracional
+# ---------------------------------------------------------------------------
+vib = Vibrations(h2o)
+vib.run()
+vib.summary()
+
+# Frecuencias en cm^-1 (ASE devuelve complejos: la parte imaginaria
+# codifica los modos con curvatura negativa, es decir, frecuencias
+# "imaginarias" en la convención espectroscópica habitual)
+frequencies = vib.get_frequencies()  # array complejo, unidades cm^-1
+
+real_part = frequencies.real
+imag_part = frequencies.imag
+
+# Una frecuencia es "imaginaria" si su parte imaginaria es
+# significativamente distinta de cero (dominante sobre la parte real)
+is_imaginary = imag_part > 1e-6
+n_imaginary = np.sum(is_imaginary)
+
+# Para graficar, representamos los modos imaginarios como valores
+# negativos en el eje (convención estándar en espectros vibracionales)
+plot_values = np.where(is_imaginary, -imag_part, real_part)
+
+# ---------------------------------------------------------------------------
+# 4. Gráfica diagnóstica: ¿mínimo verdadero o punto de silla?
+# ---------------------------------------------------------------------------
+fig, ax = plt.subplots(figsize=(9, 5))
+
+colors = ['crimson' if imag else 'steelblue' for imag in is_imaginary]
+indices = np.arange(1, len(plot_values) + 1)
+
+ax.bar(indices, plot_values, color=colors, edgecolor='black', linewidth=0.5)
+ax.axhline(0, color='black', linewidth=0.8)
+
+ax.set_xlabel("Modo vibracional")
+ax.set_ylabel(r"Frecuencia (cm$^{-1}$)")
+ax.set_title("Espectro vibracional — diagnóstico de mínimo de energía")
+ax.set_xticks(indices)
+
+# Leyenda manual
+from matplotlib.patches import Patch
+legend_elements = [
+    Patch(facecolor='steelblue', edgecolor='black', label='Frecuencia real (curvatura positiva)'),
+    Patch(facecolor='crimson', edgecolor='black', label='Frecuencia imaginaria (curvatura negativa)')
+]
+ax.legend(handles=legend_elements, loc='best')
+
+# Anotación de conclusión directamente en la gráfica
+if n_imaginary == 0:
+    veredicto = "✓ Mínimo de energía verdadero (0 frecuencias imaginarias)"
+    box_color = "#d4edda"
+elif n_imaginary == 1:
+    veredicto = "⚠ Punto de silla de primer orden (1 frecuencia imaginaria)"
+    box_color = "#fff3cd"
+else:
+    veredicto = f"✗ Punto de silla de orden {n_imaginary} ({n_imaginary} frecuencias imaginarias)"
+    box_color = "#f8d7da"
+
+ax.text(
+    0.5, -0.22, veredicto,
+    transform=ax.transAxes,
+    ha='center', va='top',
+    fontsize=11, fontweight='bold',
+    bbox=dict(boxstyle="round,pad=0.4", facecolor=box_color, edgecolor='gray')
+)
+
+plt.tight_layout()
+plt.savefig("diagnostico_frecuencias.png", dpi=200, bbox_inches='tight')
+plt.show()
+
+# ---------------------------------------------------------------------------
+# 5. Resumen en consola
+# ---------------------------------------------------------------------------
+print("\n--- Diagnóstico de la geometría optimizada ---")
+print(f"Número de frecuencias imaginarias: {n_imaginary}")
+if n_imaginary == 0:
+    print("La estructura corresponde a un mínimo de energía verdadero.")
+else:
+    print("La estructura NO es un mínimo verdadero: corresponde a un punto")
+    print("de silla. Revise la geometría inicial o el camino de optimización.")
