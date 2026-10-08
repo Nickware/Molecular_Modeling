@@ -2,6 +2,8 @@
 
 El **modelado molecular** es un término general que describe un conjunto de técnicas computacionales utilizadas para simular y experimentar con las estructuras físicas y propiedades químicas de las moléculas y materiales.
 
+Los pasos generales para configurar el entorno de los ejemplos que usan ASE están en la [guía de instalación](docs/installation/README.md).
+
 ## ¿En qué consiste el modelado molecular?
 
 El objetivo principal es representar y visualizar las **formas tridimensionales** de las moléculas y simular cómo se mueven e interactúan, ya que son demasiado pequeñas para ser vistas con microscopía clásica.

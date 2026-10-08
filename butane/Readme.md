@@ -2,7 +2,7 @@
 
 Este ejemplo estudia una molécula aislada de butano (C4H10) mediante teoría del funcional de la densidad (DFT). El programa de [butane.py](butane.py) usa ASE como interfaz de cálculo y NWChem para evaluar la energía electrónica y las fuerzas. A partir de una geometría XYZ, optimiza las posiciones atómicas y calcula las frecuencias vibracionales en la aproximación armónica.
 
-El ejemplo no simula butano líquido ni calcula propiedades de transporte o termodinámicas. Para los requisitos, el entorno reproducible y los comandos de ejecución, consulta la [guía de Distrobox](entorno-distrobox/README.md).
+El ejemplo no simula butano líquido ni calcula propiedades de transporte o termodinámicas. Para instalar ASE y los calculadores usados por los ejemplos del repositorio, consulta la [guía general de instalación](../docs/installation/README.md).
 
 ## Física del problema
 
@@ -36,7 +36,7 @@ ASE también puede crear archivos de caché para el cálculo vibracional en el d
 
 ## Alcance y limitaciones
 
-- Es un cálculo de una molécula aislada; no hay caja periódica, ensamble estadístico ni evolución temporal.
+- El modelo es una molécula aislada de butano en fase gaseosa, sin moléculas vecinas ni entorno solvente. No se define una celda periódica y no se muestrean configuraciones de un ensamble estadístico. La optimización y el cálculo vibracional evalúan estructuras estáticas cerca de un mínimo; no integran ecuaciones de movimiento ni generan una trayectoria temporal de dinámica molecular.
 - La optimización encuentra un punto estacionario cercano a la geometría inicial; no barre el ángulo torsional C–C ni garantiza encontrar el mínimo conformacional global.
 - PBE sin corrección de dispersión explícita puede no describir con la misma precisión todas las contribuciones débiles que afectan diferencias conformacionales.
 - El análisis vibracional es armónico alrededor de la geometría optimizada; no incluye anarmonicidad ni efectos térmicos explícitos.
