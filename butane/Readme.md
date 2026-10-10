@@ -1,90 +1,55 @@
- # Butano: Perspectiva desde el Modelamiento Molecular
+# Butano: optimización de geometría y análisis vibracional
 
-## Estructura y Conformación
+Este ejemplo estudia una molécula aislada de butano (C4H10) mediante teoría del funcional de la densidad (DFT). El programa de [butane.py](butane.py) usa ASE como interfaz de cálculo y NWChem para evaluar la energía electrónica y las fuerzas. A partir de una geometría XYZ, optimiza las posiciones atómicas y calcula las frecuencias vibracionales en la aproximación armónica.
 
-El butano (C₄H₁₀) es el alcano más simple que exhibe **conformacionalismo** significativo. Su cadena carbonada de cuatro átomos puede adoptar diversas conformaciones rotacionales alrededor del enlace C2–C3, cada una con distintas energías:
+El ejemplo no simula butano líquido ni calcula propiedades de transporte o termodinámicas. Para los requisitos, el entorno reproducible y los comandos de ejecución, consulta la [guía de Distrobox](entorno-distrobox/README.md).
 
-- **Anti** (o *trans*): conformación más estable. Los grupos metilo se encuentran a 180°. Mínimo de energía debido a la mínima repulsión estérica y torsional.
-- **Gauche** (+60° y −60°): dos conformaciones degeneradas (mismo nivel energético). Los grupos metilo están a 60°, generando una repulsión estérica moderada (~0.9 kcal/mol por encima del anti).
-- **Eclipsado** (sinclinal y anticlinal): máximos de energía. Los hidrógenos o grupos metilo se eclipsan, generando fuerte repulsión torsional.
-- **Totalmente eclipsado** (0°): máximo absoluto de energía. Los dos grupos metilo se eclipsan directamente (~4.5–5.0 kcal/mol por encima del anti).
+## Física del problema
 
-Esta distribución de energía conformacional se modela mediante potenciales dihedrales de la forma:
+El butano tiene una cadena de cuatro carbonos y puede cambiar de conformación al rotar alrededor del enlace central C2–C3. La conformación anti suele ser la más estable; las dos conformaciones gauche tienen energía mayor, y las conformaciones eclipsadas presentan barreras torsionales. Esta diferencia se origina principalmente en interacciones torsionales y repulsiones entre átomos.
 
-$$V(\phi) = \frac{V_n}{2}[1 + \cos(n\phi - \delta)]$$
+En este cálculo, la energía electrónica $E(\mathbf{R})$ se aproxima con DFT para posiciones nucleares $\mathbf{R}$ dadas. Bajo la aproximación de Born–Oppenheimer, los núcleos se optimizan sobre la superficie de energía potencial electrónica. Las fuerzas son $\mathbf{F}_i=-\nabla_i E$ y el optimizador BFGS cambia las coordenadas para llegar a una geometría estacionaria.
 
-Donde los parámetros $V_n$ (barreras rotacionales), $n$ (periodicidad) y $\delta$ (fase) se ajustan para reproducir la curva de energía potencial (PES) obtenida por cálculos *ab initio*.
+Las vibraciones se describen cerca de esa geometría mediante la matriz Hessiana, $H_{ij}=\partial^2E/\partial R_i\partial R_j$. ASE la estima mediante desplazamientos finitos y calcula los modos normales a partir de la Hessiana ponderada por las masas. Una curvatura negativa da una frecuencia imaginaria; su presencia significativa puede indicar que la estructura es un punto de silla y no un mínimo. Como el butano es una molécula no lineal de 14 átomos, se esperan $3N-6=36$ modos vibracionales.
 
----
+## Metodología implementada
 
-## Propiedades Mecánicas desde el Modelamiento
+1. ASE lee las coordenadas iniciales de `butane.xyz`.
+2. Se asigna el calculador NWChem con el funcional de intercambio y correlación PBE (`xc='PBE'`). Los demás detalles del método dependen de los valores predeterminados del calculador y de la instalación; el script no especifica explícitamente un conjunto de bases.
+3. El optimizador BFGS relaja la geometría hasta que la fuerza máxima cae por debajo de `0.01 eV/Å` (`fmax=0.01`).
+4. Se guarda la geometría optimizada y se imprimen la energía potencial y la fuerza máxima residual.
+5. ASE calcula y resume las frecuencias vibracionales. El script cuenta las frecuencias cuya parte imaginaria supera `1e-6 cm^-1`, las representa como barras negativas y guarda una gráfica diagnóstica.
 
-### 1. **Dinámica Molecular (MD)**
-En simulaciones de butano líquido o gas, las propiedades mecánicas emergen del promedio estadístico sobre el ensamble:
+La clasificación de frecuencias debe leerse como una comprobación numérica, no como una prueba automática de la conformación global más estable. Una geometría inicial diferente puede converger a otro mínimo local; además, modos muy pequeños pueden ser sensibles a los parámetros numéricos y a la convergencia del cálculo.
 
-- **Presión y ecuación de estado**: se calcula mediante el virial de Clausius o fluctuaciones del volumen (NPT).
-- **Viscosidad**: obtenida por el método de Green-Kubo (integrales de autocorrelación del tensor de presión) o ensayos de no-equilibrio (NEMD).
-- **Coeficiente de difusión**: via la relación de Einstein o Green-Kubo.
+## Archivos y resultados
 
-### 2. **Mecánica Estadística**
-La función de partición del butano debe incluir explícitamente las contribuciones conformacionales:
+| Archivo o salida | Descripción |
+|---|---|
+| `butane.xyz` | Geometría molecular de partida: 4 carbonos y 10 hidrógenos. |
+| `optimization.traj` | Trayectoria de la optimización BFGS. |
+| `butane_opt.xyz` | Geometría al terminar la optimización. |
+| `diagnostico_frecuencias.png` | Gráfica de frecuencias y conteo de modos imaginarios. |
+| Salida de consola | Energía potencial en eV, fuerza máxima residual en eV/Å y diagnóstico de modos imaginarios. |
 
-$$Q = q_{\text{trans}} \cdot q_{\text{rot}} \cdot q_{\text{vib}} \cdot q_{\text{conf}}$$
+ASE también puede crear archivos de caché para el cálculo vibracional en el directorio de trabajo. Los valores numéricos no están fijados aquí: dependen del método, de los valores predeterminados de NWChem/ASE, de la geometría inicial y de la convergencia alcanzada.
 
-Donde $q_{\text{conf}}$ suma sobre los estados anti y gauche con sus respectivos factores de Boltzmann. Esto afecta directamente:
-- Capacidad calorífica ($C_p$, $C_v$)
-- Entropía configuracional
-- Cambio de entalpía en transiciones de fase
+## Alcance y limitaciones
 
-### 3. **Propiedades Elásticas en Fase Condensada**
-En butano líquido a alta presión (relevante para aplicaciones como propelente o combustible):
-- **Módulo de compresibilidad** $K_T = -V(\partial P/\partial V)_T$
-- **Coeficiente de expansión térmica** $\alpha_P$
+- Es un cálculo de una molécula aislada; no hay caja periódica, ensamble estadístico ni evolución temporal.
+- La optimización encuentra un punto estacionario cercano a la geometría inicial; no barre el ángulo torsional C–C ni garantiza encontrar el mínimo conformacional global.
+- PBE sin corrección de dispersión explícita puede no describir con la misma precisión todas las contribuciones débiles que afectan diferencias conformacionales.
+- El análisis vibracional es armónico alrededor de la geometría optimizada; no incluye anarmonicidad ni efectos térmicos explícitos.
+- El umbral de `1e-6 cm^-1` aplicado a la parte imaginaria es muy estricto. Modos casi nulos y ruido numérico merecen inspección antes de concluir que hay un punto de silla.
 
-Estos se extraen de simulaciones NPT o de la pendiente de la isoterma en ecuaciones de estado (como PC-SAFT o Peng-Robinson).
+## Perspectivas de mejora
 
----
+1. Especificar explícitamente el conjunto de bases, carga, multiplicidad, tolerancias electrónicas y parámetros del cálculo para mejorar la reproducibilidad.
+2. Generar conformaciones anti y gauche, optimizarlas por separado y comparar energías relativas; así se estudiaría la superficie conformacional que el README describe como contexto.
+3. Añadir dispersión (por ejemplo, una corrección compatible con el método elegido) y contrastar las diferencias energéticas con un método o conjunto de bases de referencia.
+4. Definir un umbral físico configurable para frecuencias imaginarias, reportar sus valores y validar la convergencia de la Hessiana antes de clasificar el mínimo.
+5. Separar los archivos de salida por ejecución, registrar versiones de ASE/NWChem y guardar un resumen estructurado para facilitar comparación y trazabilidad.
 
-## Parámetros de Campo de Fuerzas (Force Field)
+## Referencias de ejecución
 
-Para modelar el butano clásicamente, los campos de fuerza como **OPLS-AA**, **CHARMM** o **AMBER** definen:
-
-| Parámetro | Valor típico (OPLS-AA) | Significado físico |
-|-----------|------------------------|-------------------|
-| $r_0$ (C–C) | 1.53 Å | Longitud de enlace |
-| $r_0$ (C–H) | 1.09 Å | Longitud de enlace |
-| $k_b$ (C–C) | ~268 kcal/mol·Å² | Constante de rigidez |
-| $k_\theta$ (H–C–H) | ~37 kcal/mol·rad² | Rigidez angular |
-| $V_3$ (torsión C–C) | ~2.0 kcal/mol | Barrera rotacional |
-| $\sigma_{CC}$ | 3.50 Å | Diámetro de Lennard-Jones |
-| $\epsilon_{CC}$ | 0.066 kcal/mol | Pozo de potencial LJ |
-
-Los parámetros de **no-enlace** (Lennard-Jones 12-6) gobiernan las propiedades mecánicas colectivas:
-$$U_{LJ}(r) = 4\epsilon\left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6}\right]$$
-
----
-
-## Aplicaciones del Modelo
-
-| Propiedad | Método de simulación | Resultado esperado |
-|-----------|---------------------|-------------------|
-| Densidad del líquido (298 K, 1 atm) | MD NPT | ~0.573 g/cm³ |
-| Presión de vapor | MD/GCMC o EoS | ~2.1 atm a 298 K |
-| Viscosidad | NEMD o Green-Kubo | ~0.17 cP (gas, 298 K) |
-| Tensión superficial | MD con método de la gota | ~12 mN/m |
-
----
-
-## Perspectiva Cuántica vs. Clásica
-
-- **Cálculos DFT/HF** (B3LYP, MP2): determinan con precisión la curva de PES conformacional, las barreras rotacionales y las frecuencias vibracionales. Son la base para **parametrizar** los campos de fuerza clásicos.
-- **Dinámica *ab initio*** (CPMD, BOMD): útil para estudiar la ruptura de enlaces o reacciones (combustión, pirolisis), donde los efectos electrónicos dominan.
-
----
-
-## Resumen
-
-Desde el modelamiento molecular, el butano es un sistema **paradigmático** para entender:
-1. **Conformacionalismo**: la interconversión anti/gauche como fundamento de la termodinámica configuracional.
-2. **Transferibilidad de parámetros**: los grupos metilo y metileno del butano se "transfieren" a alcanos mayores.
-3. **Escala de tiempo**: las rotaciones alrededor de C–C ocurren en ~ps, mientras que la difusión molecular en líquido ocurre en ~ns.
+La [guía de entorno-distrobox](entorno-distrobox/README.md) documenta los requisitos, la instalación de NWChem y Python, y la ejecución del ejemplo en un contenedor Ubuntu administrado con Distrobox.
