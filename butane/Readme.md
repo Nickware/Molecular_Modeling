@@ -52,4 +52,4 @@ ASE también puede crear archivos de caché para el cálculo vibracional en el d
 
 ## Referencias de ejecución
 
-La [guía de entorno-distrobox](entorno-distrobox/README.md) documenta los requisitos, la instalación de NWChem y Python, y la ejecución del ejemplo en un contenedor Ubuntu administrado con Distrobox.
+La [guía de entorno de instalación y configuración](../docs/installation/readme.md) documenta los requisitos, la instalación de NWChem y Python, y la ejecución del ejemplo en un contenedor Ubuntu administrado con Distrobox.
