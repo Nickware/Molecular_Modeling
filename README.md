@@ -2,7 +2,15 @@
 
 El **modelado molecular** es un término general que describe un conjunto de técnicas computacionales utilizadas para simular y experimentar con las estructuras físicas y propiedades químicas de las moléculas y materiales.
 
-Los pasos generales para configurar el entorno de los ejemplos que usan ASE están en la [guía de instalación](docs/installation/README.md).
+Los pasos generales para configurar el entorno de los ejemplos que usan ASE están en la [guía de instalación](docs/installation/readme.md).
+
+## Alcance computacional del repositorio
+
+Aunque este README presenta distintas áreas del modelado molecular, los ejemplos computacionales disponibles se concentran principalmente en cálculos de estructura electrónica de moléculas aisladas: optimización geométrica y análisis de frecuencias con DFT. La mayoría de los scripts Python usan ASE como interfaz y NWChem como calculador; también hay un ejemplo para dióxido de carbono con Quantum ESPRESSO y herramientas de análisis/postprocesamiento.
+
+Los ejemplos son scripts independientes, no una aplicación unificada ni un flujo automatizado común. Su ejecución requiere Python, ASE y las bibliotecas que importe cada script, además del programa externo correspondiente (por ejemplo, NWChem o Quantum ESPRESSO). También hay que ejecutar cada script desde la carpeta que contiene sus archivos de entrada, ya que varios usan rutas relativas.
+
+Por tanto, la dinámica molecular de líquidos, las propiedades de transporte y los métodos multiescala descritos más abajo son contexto científico, no capacidades cubiertas de forma general por los scripts actuales. [examples/butane.v2.md](examples/butane.v2.md) propone un futuro protocolo GROMACS/OPLS-AA para butano líquido; es una guía de trabajo y no un flujo ejecutable validado incluido en los ejemplos actuales.
 
 ## ¿En qué consiste el modelado molecular?
 
