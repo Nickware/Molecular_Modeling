@@ -4,6 +4,14 @@ Este protocolo propone una simulación clásica de muchas moléculas de n-butano
 
 Los valores de temperatura, presión, duración, tamaño de caja y opciones de corte que aparecen aquí son una **configuración inicial**, no resultados validados. Hay que registrar las versiones del software y de la topología, confirmar la fase termodinámica, comprobar convergencia y contrastar con datos experimentales antes de presentar propiedades como resultados.
 
+## Estado de implementación
+
+<p><span style="color: #0969da;"><strong>AZUL — Ejecutado y comprobado:</strong></span> contenedor Docker Ubuntu 24.04 con GROMACS 2023.3; archivos LigParGen de n-butano identificados (14 átomos, carga neta 0); topología monomolecular aceptada por <code>gmx grompp</code>; minimización de prueba convergida en 6 pasos.</p>
+
+<p><span style="color: #cf222e;"><strong>ROJO — Siguiente paso pendiente:</strong></span> construir las cajas periódicas multimoleculares (N=256 y N=512) y crear una topología de sistema cuyo recuento de <code>[ molecules ]</code> coincida con las moléculas insertadas.</p>
+
+El color se acompaña de las etiquetas “AZUL” y “ROJO” para que el estado siga siendo legible en visores Markdown que no representen estilos HTML.
+
 ## 1. Definir el sistema y las condiciones
 
 Para estudiar un líquido, primero elige una temperatura y presión a las que n-butano sea líquido. Como punto de partida de este protocolo puede investigarse `T = 250 K`, `P = 1 bar`; confirma que ese estado está en la región líquida con el diagrama de fases o la presión de vapor experimental que vayas a usar. No uses `298 K, 1 bar` como condición de líquido: a esas condiciones el butano estable es gas.
@@ -27,26 +35,22 @@ sudo apt update
 sudo apt install -y gromacs
 ```
 
-Comprueba que el ejecutable funciona y registra su versión:
-
-```bash
-gmx --version
-```
-
-Si tu sistema requiere paralelismo MPI, GPU o una versión concreta, sigue la guía oficial de instalación de [GROMACS](https://manual.gromacs.org/current/install-guide/index.html) y conserva las opciones de compilación en el registro del cálculo.
-
 ### Contenedor Docker de prueba
 
-Para aislar la instalación, desde la raíz del repositorio crea un contenedor Ubuntu 24.04 que comparte el directorio del proyecto:
+El contenedor de prueba ya está creado como `butane-v2-gromacs`, basado en Ubuntu 24.04, con el repositorio montado en `/workspace` y GROMACS 2023.3 instalado. Para volver a iniciarlo y consultar su versión:
 
 ```bash
-docker create --name butane-v2-gromacs \
-  --mount "type=bind,src=$PWD,dst=/workspace" \
-  ubuntu:24.04 sleep infinity
+docker start butane-v2-gromacs
+docker exec butane-v2-gromacs gmx --version
+```
+
+Para crear un contenedor equivalente desde cero, ejecuta desde la raíz del repositorio:
+
+```bash
+docker create --name butane-v2-gromacs --mount "type=bind,src=$PWD,dst=/workspace" ubuntu:24.04 sleep infinity
 docker start butane-v2-gromacs
 docker exec butane-v2-gromacs apt-get update
 docker exec butane-v2-gromacs apt-get install -y gromacs
-docker exec butane-v2-gromacs gmx --version
 ```
 
 Si el contenedor ya existe, omite `docker create` y usa `docker start`. En VS Code instalado como Flatpak, ejecuta Docker en el host con `flatpak-spawn --host docker ...`; el shell del sandbox puede no tener el comando `docker` directamente.
@@ -65,8 +69,6 @@ Hashes SHA-256 de los archivos recibidos:
 3231da714712dbc08b6bc897ce40597ed52ac2a22b0edfb1378b1aa2b4fa8f5f  parameters/ligpargen/LIG.gmx.gro
 854ed8c3a04781e1dc1ffc65775006cb25281c435e85cd8a5babbca1ed4bf98b  parameters/ligpargen/LIG.gmx.itp
 ```
-
-Organiza los archivos, por ejemplo:
 
 La estructura actual dentro del repositorio es:
 
@@ -90,13 +92,10 @@ examples/butane-v2/
 Desde la raíz del repositorio, prepara las carpetas de las réplicas y el análisis:
 
 ```bash
-mkdir -p examples/butane-v2/runs/N256/rep{01,02,03} \\
-  examples/butane-v2/runs/N512/rep{01,02,03} \\
-  examples/butane-v2/analysis
+mkdir -p examples/butane-v2/runs/N256/rep01 examples/butane-v2/runs/N256/rep02 examples/butane-v2/runs/N256/rep03 examples/butane-v2/runs/N512/rep01 examples/butane-v2/runs/N512/rep02 examples/butane-v2/runs/N512/rep03 examples/butane-v2/analysis
 ```
 
 Los dos archivos de LigParGen ya están extraídos y no deben sobrescribirse. El ZIP original no está actualmente en el repositorio; si lo conservas o vuelves a descargarlo, guárdalo aparte, por ejemplo como `examples/butane-v2/parameters/ligpargen-original.zip`. Ajusta siempre las rutas de entrada a los nombres reales, sin alterar el paquete original.
-Si el archivo se descarga con otro nombre o formato, conserva ese nombre original y usa la herramienta adecuada para inspeccionar/descomprimirlo. Los nombres y rutas de las coordenadas de los comandos posteriores son ilustrativos: ajústalos a los archivos que LigParGen realmente generó, sin renombrar ni modificar el original.
 
 Registra en un `README` o manifiesto de la parametrización:
 
@@ -394,3 +393,17 @@ Entrega, como mínimo, una tabla con:
 No rellenes la tabla con valores esperados como si fueran resultados: las cifras deben venir de las trayectorias analizadas.
 
 Conserva versiones de GROMACS y del campo de fuerza, archivos originales de LigParGen, coordenadas, topologías procesadas, entradas `.mdp`, semillas, logs, scripts de análisis y datos experimentales citados. Así se puede reconstruir cada réplica sin depender de los valores predeterminados del equipo.
+
+## Perspectivas: de la topología validada al análisis
+
+1. <span style="color: #cf222e;"><strong>Siguiente paso — cajas y topología periódica:</strong></span> generar sistemas independientes de N=256 y N=512 usando `LIG.gmx.gro`; confirmar el número insertado, 14 × N átomos y el mismo número de moléculas en `[ molecules ]`.
+2. **Minimización por réplica:** compilar y minimizar cada sistema; revisar energía y contactos desfavorables.
+3. **Equilibración NPT:** asignar una semilla única por réplica y comprobar que temperatura, presión, volumen y densidad lleguen a un régimen estacionario.
+4. **Producción NPT:** medir densidad y energía, calcular medias e incertidumbres por bloques y ampliar la trayectoria si los observables no convergen.
+5. **Producción NVT:** a volumen equilibrado, generar la trayectoria para obtener la difusión molecular desde la región lineal del MSD.
+6. **Réplicas y tamaño finito:** combinar réplicas independientes, cuantificar incertidumbres y comparar N=256 con N=512.
+7. **Contraste experimental:** comparar propiedades definidas con datos de n-butano líquido a la misma temperatura, presión y fase; documentar fuentes, unidades y correcciones.
+
+<p><span style="color: #0969da;"><strong>Último paso completado:</strong></span> validación monomolecular de LigParGen: <code>gmx grompp</code> creó el TPR y la minimización de prueba convergió en 6 pasos.</p>
+
+El color se complementa con etiquetas textuales para visores Markdown que no representen estilos HTML. Solo el primer paso de la hoja de ruta está resaltado en rojo; las etapas restantes son posteriores y aún no ejecutadas. La validación azul no representa una simulación periódica de líquido.
