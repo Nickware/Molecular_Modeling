@@ -35,17 +35,49 @@ gmx --version
 
 Si tu sistema requiere paralelismo MPI, GPU o una versión concreta, sigue la guía oficial de instalación de [GROMACS](https://manual.gromacs.org/current/install-guide/index.html) y conserva las opciones de compilación en el registro del cálculo.
 
+### Contenedor Docker de prueba
+
+Para aislar la instalación, desde la raíz del repositorio crea un contenedor Ubuntu 24.04 que comparte el directorio del proyecto:
+
+```bash
+docker create --name butane-v2-gromacs \
+  --mount "type=bind,src=$PWD,dst=/workspace" \
+  ubuntu:24.04 sleep infinity
+docker start butane-v2-gromacs
+docker exec butane-v2-gromacs apt-get update
+docker exec butane-v2-gromacs apt-get install -y gromacs
+docker exec butane-v2-gromacs gmx --version
+```
+
+Si el contenedor ya existe, omite `docker create` y usa `docker start`. En VS Code instalado como Flatpak, ejecuta Docker en el host con `flatpak-spawn --host docker ...`; el shell del sandbox puede no tener el comando `docker` directamente.
+
+En este contenedor se probó GROMACS 2023.3 de Ubuntu. El test y la minimización de una molécula documentados abajo pasan; esto valida los archivos de entrada de una molécula, no las etapas de líquido NPT/NVT ni sus resultados.
+
 ## 3. Obtener y conservar la parametrización OPLS-AA
 
 En LigParGen, solicita **n-butano neutro** (`CCCC`) con el campo de fuerza **OPLS-AA** y formato de salida para GROMACS. Conserva el archivo descargado completo y todos sus archivos de topología y coordenadas. No reconstruyas cargas, tipos atómicos, reglas de combinación o términos enlazados copiando tablas generales del repositorio: la parametrización debe corresponder a esta molécula y al formato seleccionado.
 
-Organiza los archivos, por ejemplo:
+Los archivos recibidos están en `parameters/ligpargen/` junto a este README: `LIG.gmx.gro` y `LIG.gmx.itp`. El `.gro` contiene 14 átomos y el `.itp` identifica la molécula como `LIG`; su carga total calculada desde `[ atoms ]` es `0.0000 e`. El encabezado del ITP indica LigParGen 2.1 y cargas derivadas CM1A. El ZIP original de LigParGen no está en la carpeta actual; si aún lo tienes, consérvalo allí sin reemplazar estos archivos.
+
+Hashes SHA-256 de los archivos recibidos:
 
 ```text
-butane-v2/
-  parameters/
-    ligpargen-original.zip
-    ligpargen-output/
+3231da714712dbc08b6bc897ce40597ed52ac2a22b0edfb1378b1aa2b4fa8f5f  parameters/ligpargen/LIG.gmx.gro
+854ed8c3a04781e1dc1ffc65775006cb25281c435e85cd8a5babbca1ed4bf98b  parameters/ligpargen/LIG.gmx.itp
+```
+
+Organiza los archivos, por ejemplo:
+
+La estructura actual dentro del repositorio es:
+
+```text
+examples/butane-v2/
+  parameters/ligpargen/
+    LIG.gmx.gro
+    LIG.gmx.itp
+  validation/
+    em.mdp
+    topol.top
   runs/
     N256/rep01/
     N256/rep02/
@@ -55,19 +87,15 @@ butane-v2/
   analysis/
 ```
 
-Crea las carpetas de trabajo y, si LigParGen entrega un archivo ZIP, extrae una copia conservando el ZIP original:
+Desde la raíz del repositorio, prepara las carpetas de las réplicas y el análisis:
 
 ```bash
-mkdir -p butane-v2/parameters/ligpargen-output \
-  butane-v2/runs/N256/rep01 butane-v2/runs/N256/rep02 \
-  butane-v2/runs/N256/rep03 butane-v2/runs/N512/rep01 \
-  butane-v2/runs/N512/rep02 butane-v2/runs/N512/rep03 \
-  butane-v2/analysis
-unzip butane-v2/parameters/ligpargen-original.zip \
-  -d butane-v2/parameters/ligpargen-output
-find butane-v2/parameters/ligpargen-output -maxdepth 2 -type f -print
+mkdir -p examples/butane-v2/runs/N256/rep{01,02,03} \\
+  examples/butane-v2/runs/N512/rep{01,02,03} \\
+  examples/butane-v2/analysis
 ```
 
+Los dos archivos de LigParGen ya están extraídos y no deben sobrescribirse. El ZIP original no está actualmente en el repositorio; si lo conservas o vuelves a descargarlo, guárdalo aparte, por ejemplo como `examples/butane-v2/parameters/ligpargen-original.zip`. Ajusta siempre las rutas de entrada a los nombres reales, sin alterar el paquete original.
 Si el archivo se descarga con otro nombre o formato, conserva ese nombre original y usa la herramienta adecuada para inspeccionar/descomprimirlo. Los nombres y rutas de las coordenadas de los comandos posteriores son ilustrativos: ajústalos a los archivos que LigParGen realmente generó, sin renombrar ni modificar el original.
 
 Registra en un `README` o manifiesto de la parametrización:
@@ -82,6 +110,33 @@ Inspecciona la topología antes de usarla. Conserva las definiciones de tipos y 
 Al preparar la topología del sistema, parte de los archivos generados por LigParGen y conserva sus `#include`, `[ defaults ]`, `[ atomtypes ]`, `[ nonbond_params ]` y `[ moleculetype ]` según estén organizados. No añadas otra definición de OPLS ni dupliques `[ defaults ]`. En la sección `[ molecules ]`, el nombre debe coincidir exactamente con el nombre de `[ moleculetype ]`; el número se cambiará al total que realmente se haya insertado. `gmx grompp -pp processed.top` permite revisar el archivo que resulta tras procesar los includes.
 
 No continúes si GROMACS informa que faltan tipos, parámetros, átomos o que el total de átomos de la topología no coincide con la estructura.
+
+### Test de topología para una molécula
+
+La carpeta `validation/` contiene un `topol.top` de una sola molécula que incluye directamente `LIG.gmx.itp`, y un `em.mdp` mínimo. El ITP ya incluye `[ defaults ]` y `[ atomtypes ]`; por eso el test no incluye además un archivo de campo de fuerza OPLS que duplicaría esas secciones.
+
+Desde el contenedor, valida la topología:
+
+```bash
+docker exec -w /workspace/examples/butane-v2/validation \
+  butane-v2-gromacs gmx grompp \
+  -f em.mdp \
+  -c ../parameters/ligpargen/LIG.gmx.gro \
+  -p topol.top \
+  -o /tmp/butane-v2-topology-check.tpr \
+  -pp /tmp/butane-v2-processed.top \
+  -po /tmp/butane-v2-mdout.mdp
+```
+
+Después prueba una minimización corta, que solo comprueba que GROMACS puede evaluar las fuerzas y la energía:
+
+```bash
+docker exec butane-v2-gromacs gmx mdrun \
+  -s /tmp/butane-v2-topology-check.tpr \
+  -deffnm /tmp/butane-v2-min-check -nt 1
+```
+
+Resultado de esta prueba en GROMACS 2023.3: `grompp` reconoció los 14 átomos y creó el TPR; steepest descent convergió en 6 pasos con el umbral de prueba `emtol = 100`. La energía de esta prueba no es un resultado físico de líquido ni debe compararse con experimentos.
 
 ## 4. Preparar cajas periódicas independientes
 
@@ -109,7 +164,7 @@ PY
 Desde un directorio de réplica, centra la molécula plantilla y crea una caja de 256 moléculas. Sustituye la longitud por el valor calculado y usa una semilla distinta en cada réplica:
 
 ```bash
-gmx editconf -f ../parameters/ligpargen-output/butane.gro \
+gmx editconf -f ../../../parameters/ligpargen/LIG.gmx.gro \
   -o butane-centered.gro -c
 
 gmx insert-molecules -ci butane-centered.gro -nmol 256 \

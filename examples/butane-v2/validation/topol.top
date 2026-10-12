@@ -1,0 +1,7 @@
+#include "../parameters/ligpargen/LIG.gmx.itp"
+
+[ system ]
+LigParGen n-butane topology validation
+
+[ molecules ]
+LIG 1

@@ -10,7 +10,9 @@ Aunque este README presenta distintas áreas del modelado molecular, los ejemplo
 
 Los ejemplos son scripts independientes, no una aplicación unificada ni un flujo automatizado común. Su ejecución requiere Python, ASE y las bibliotecas que importe cada script, además del programa externo correspondiente (por ejemplo, NWChem o Quantum ESPRESSO). También hay que ejecutar cada script desde la carpeta que contiene sus archivos de entrada, ya que varios usan rutas relativas.
 
-Por tanto, la dinámica molecular de líquidos, las propiedades de transporte y los métodos multiescala descritos más abajo son contexto científico, no capacidades cubiertas de forma general por los scripts actuales. [examples/butane.v2.md](examples/butane.v2.md) propone un futuro protocolo GROMACS/OPLS-AA para butano líquido; es una guía de trabajo y no un flujo ejecutable validado incluido en los ejemplos actuales.
+Por tanto, la dinámica molecular de líquidos y las propiedades de transporte no están cubiertas de forma general por los scripts actuales. Como extensión, [examples/butane-v2/butane.v2.md](examples/butane-v2/butane.v2.md) documenta un protocolo v2 para GROMACS/OPLS-AA que contempla una caja periódica con topología explícita, equilibración y producción NPT/NVT, análisis de densidad, energía y difusión mediante MSD, réplicas con análisis de incertidumbre, comparación experimental y evaluación del tamaño finito.
+
+Ya se añadieron la coordenada y la topología de una molécula de butano de LigParGen y se validaron con `gmx grompp` y una minimización corta dentro de un contenedor. Esto solo valida los archivos de entrada monomoleculares; las trayectorias periódicas NPT/NVT, el análisis de réplicas y los resultados comparativos aún deben generarse antes de describir butano v2 como una simulación de líquido realizada.
 
 ## ¿En qué consiste el modelado molecular?
 
